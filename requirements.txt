@@ -1,0 +1,10 @@
+# Colab supplies PyTorch. Install a suitable CUDA build separately for local use.
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+tqdm
+webdataset
+sgfmill
+ipykernel

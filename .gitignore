@@ -1,0 +1,26 @@
+# Private datasets and generated outputs
+training/
+tests/
+dataset/
+*-features/
+*-trained-models/
+trial_*.ipynb
+*.pth
+*.pt
+*.csv
+*.json
+*.pkl
+*.npy
+*.npz
+*.gz
+*.zip
+# Credentials and local environments
+.env
+.env.*
+.venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.vscode/
+.DS_Store
