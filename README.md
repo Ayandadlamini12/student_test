@@ -16,19 +16,30 @@ Select **Runtime > Change runtime type > GPU** and run the setup notebook in ord
 
 If already cloned, skip cloning. Restart the kernel if requested after installation. Check `torch.cuda.is_available()` and the GPU name before training. The requirements file installs helper packages, not PyTorch.
 
-## 2. Obtain official data privately
+## 2. Download the official training data
 
-Cloning downloads CODE ONLY. Obtain competition data through the registered team account. Do not publish data, credentials or tokens here. Preserve the official dataset access and redistribution rules.
+The organizer publishes training data in a separate public repository: [AILAB-NDHU/aicup2026-go-dataset](https://github.com/AILAB-NDHU/aicup2026-go-dataset/releases/tag/v1.0). The tutorial-code repository itself does not contain the data.
 
-Place ten rank CSVs under `/content/student_test/training/`:
+Run this in the cloned repository:
 
-```text
-train_D.csv, train_C.csv, train_B.csv, train_A.csv
-train_1D.csv, train_2D.csv, train_3D.csv
-train_4D.csv, train_5D.csv, train_6D.csv
+```python
+%cd /content/student_test
+!python download_training_data.py
 ```
 
-When available, put six files under `/content/student_test/tests/`:
+The helper downloads the pinned v1.0 archive (224,515,476 bytes, about 214 MiB), checks the organizer's SHA-256, safely extracts it, and validates all ten CSVs: 100,000 games each, required columns, rank labels, colors and nonempty SGFs. Existing training folders are validated without overwriting them. Allow space for the archive, approximately 1.3 GB of extracted CSVs, and later feature caches/checkpoints.
+
+Expected files: `training/train_D.csv`, `train_C.csv`, `train_B.csv`, `train_A.csv`, and `train_1D.csv` through `train_6D.csv`.
+
+Organizer checksum:
+
+```text
+959ebc602b9638d665cb063a6269e0d5aef73956b77913e725763eb335ced94b
+```
+
+Data stays excluded from this teaching repository. The organizer restricts use to the 2026 AI CUP competition and prohibits identifying real users. No AI CUP login is needed to download this public training release. Team registration remains necessary for competition participation.
+
+**Test and candidate files are separate.** Obtain the official release through the competition platform when available and place these under `tests/`:
 
 ```text
 rank_prediction_test_public.csv
@@ -39,7 +50,7 @@ player_identification_candidates_public.csv
 player_identification_candidates_private.csv
 ```
 
-Upload/extract authorized data via the Colab Files panel, or mount personal Google Drive and link those folders. Check the archive's internal folder structure after extraction.
+The helper downloads training data only. It does not create test answers, register a team or submit predictions.
 
 ## 3. Generate small trial notebooks
 
@@ -118,6 +129,7 @@ Submit one 3–5-page report, code or repository link, screenshots, CSVs, reflec
 - Both baseline notebooks: translated explanations and displayed messages.
 - `network.py`, `utils.py`: original model and feature code.
 - `prepare_trial.py`: generates separate small-trial notebooks.
+- `download_training_data.py`: downloads, verifies and validates official training data.
 - `requirements.txt`: helper dependencies.
 - `BASELINE_REFERENCE.md`, `README.en.md`: English upstream reference documentation.
 

@@ -13,7 +13,7 @@ def code(text):
 
 md('''# AI CUP: Group Environment Setup
 Select **Runtime > Change runtime type > GPU** in Colab. Run cells in order.
-This notebook installs helper dependencies and creates trial notebooks. It does not start training or download competition data.
+This notebook installs helper dependencies and creates trial notebooks. It downloads official public training data when its download cell is run, but does not start training.
 ''')
 md('''## 1. Obtain teaching files
 Responsibility: clone the public repository if absent and set the working directory.
@@ -74,11 +74,14 @@ print('Device:', device, '| loss:', loss.item())
 print('Finite gradients:', bool(torch.isfinite(x.grad).all().item()))
 del x, loss
 ''')
-md('''## 5. Obtain authorized data privately
-Place the ten rank CSVs in training/ and six test/candidate CSVs in tests/ when available.
-Upload/extract the official files or mount private Google Drive. Do not publish data or credentials.
-Responsibility: check expected training files and disk space. Parameters: rank labels.
-Output: file presence and free GiB. Features alone require about 1.7 GB for Rank and 15 GB for Player.
+md('''## 5. Download official public training data
+Responsibility: download the organizer v1.0 training archive, verify its SHA-256 and validate ten CSVs.
+Parameter: pinned release URL and checksum in download_training_data.py. Output: training/ with one million games.
+The archive is about 214 MiB and extracted CSVs about 1.3 GB. More space is needed for features.
+The organizer permits competition use only and prohibits identifying real users.
+Official test/candidate files remain separate and are required for submission inference.
+''')
+code('''subprocess.run([sys.executable, 'download_training_data.py'], check=True)
 ''')
 code('''import shutil
 levels = ['D', 'C', 'B', 'A', '1D', '2D', '3D', '4D', '5D', '6D']

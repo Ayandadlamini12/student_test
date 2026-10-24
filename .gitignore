@@ -1,5 +1,8 @@
 # Private datasets and generated outputs
 training/
+downloads/
+aicup-extract-*/
+*.part
 tests/
 dataset/
 *-features/
