@@ -59,9 +59,77 @@ The helper downloads training data only. It does not create test answers, regist
 !python prepare_trial.py
 ```
 
-This generates `trial_rank-prediction.ipynb` and `trial_player-identification.ipynb`. Download a generated file from the Files panel, then upload/open it as a notebook in Colab. Locally, open it in VS Code.
+Run the cell above in the setup notebook after Steps 1 and 2. It creates two files inside `/content/student_test/`:
 
-**A separate Colab notebook can have a separate runtime.** Repeat cloning, package installation and private data access there if necessary. Add `%cd /content/student_test` in a new first code cell. Opening a GitHub notebook does not automatically clone its supporting Python files.
+- `trial_rank-prediction.ipynb`: run this one first.
+- `trial_player-identification.ipynb`: run this after the Rank trial works.
+
+### 3A. Download and open the generated notebook
+
+1. Click the folder icon on the left of Colab to open **Files**.
+2. Expand `student_test`. Refresh the file list if the generated notebooks are not visible.
+3. Open the three-dot menu beside `trial_rank-prediction.ipynb` and choose **Download**.
+4. Select **File > Open notebook > Upload** and upload that downloaded `.ipynb` file. Uploading the notebook does not upload `utils.py`, `network.py` or the training CSVs.
+5. In the opened trial notebook, select **Runtime > Change runtime type > GPU**.
+
+### 3B. Prepare the trial notebook's own runtime BEFORE imports
+
+A different notebook can have a different runtime and filesystem. Do not assume that files or packages from the setup notebook are present. Click **+ Code**, move the new cell ABOVE the original imports cell, and paste:
+
+```python
+from pathlib import Path
+import subprocess
+import os
+import sys
+
+repo = Path('/content/student_test')
+if not (repo / '.git').exists():
+    subprocess.run(['git', 'clone',
+                    'https://github.com/Ayandadlamini12/student_test.git',
+                    str(repo)], check=True)
+else:
+    subprocess.run(['git', '-C', str(repo), 'pull', '--ff-only'], check=True)
+
+os.chdir(repo)
+if str(repo) not in sys.path:
+    sys.path.insert(0, str(repo))
+
+for name in ['utils.py', 'network.py', 'download_training_data.py']:
+    print(name, 'FOUND' if (repo / name).is_file() else 'MISSING')
+```
+
+Run that cell first. All three files should print **FOUND**. This also updates an older clone that does not yet contain the download script. If Git reports local edits and refuses to update, preserve those edits before resolving the update; do not delete the folder blindly.
+
+### 3C. Install packages and make data available in this runtime
+
+Add and run these cells below the new setup cell, still BEFORE the original imports:
+
+```python
+%pip install -r /content/student_test/requirements.txt
+```
+
+```python
+subprocess.run([sys.executable, '-u',
+                '/content/student_test/download_training_data.py'], check=True)
+```
+
+The downloader validates an existing training folder instead of downloading it again. In a new runtime, it downloads and extracts the official archive. Wait for the ten validation messages and the final readiness message. If installation requests a restart, restart and rerun the setup cell before continuing.
+
+### 3D. Run the actual trial in order
+
+1. Rerun the original imports cell. `from utils ...` and `from network ...` should now work.
+2. Run the configuration cell and check that the device is CUDA and `NUM_EPOCHS` is 1.
+3. Run data loading, feature extraction, Data Loader and Model Training cells in order.
+4. Stop before **Section 4: Inference** unless the official test/candidate files are available.
+5. Save the notebook, trial screenshots, history and checkpoints. Repeat 3A–3D for the Player trial, checking its own runtime too.
+
+If `ModuleNotFoundError: No module named 'utils'` appears, rerun 3B and check that the working directory is `/content/student_test`. **Do not install a package named `utils`: the required module is this repository's `utils.py`.**
+
+If the download command returns `CalledProcessError`, inspect the script's error text immediately before the traceback. A missing script often indicates an old clone or the wrong working directory. The absolute script path above avoids the latter.
+
+### Local VS Code alternative
+
+Run `python prepare_trial.py` in the repository's terminal, then open `trial_rank-prediction.ipynb` directly. Select the correct local Python kernel and run from the repository folder. Skip Colab-only `/content` paths and `%pip` installation if dependencies already exist in that environment.
 
 | Trial setting | Rank | Player |
 |---|---|---|
