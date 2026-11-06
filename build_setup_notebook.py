@@ -75,9 +75,9 @@ print('Finite gradients:', bool(torch.isfinite(x.grad).all().item()))
 del x, loss
 ''')
 md('''## 5. Download official public training data
-Responsibility: download the organizer v1.0 training archive, verify its SHA-256 and validate ten CSVs.
+Responsibility: download the organizer v1.1 training archive, verify its SHA-256 and validate ten CSVs.
 Parameter: pinned release URL and checksum in download_training_data.py. Output: training/ with one million games.
-The archive is about 214 MiB and extracted CSVs about 1.3 GB. More space is needed for features.
+The archive is about 210 MiB and extracted CSVs about 1.3 GB. More space is needed for features.
 The organizer permits competition use only and prohibits identifying real users.
 Official test/candidate files remain separate and are required for submission inference.
 ''')

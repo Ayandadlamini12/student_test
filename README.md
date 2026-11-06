@@ -18,7 +18,7 @@ If already cloned, skip cloning. Restart the kernel if requested after installat
 
 ## 2. Download the official training data
 
-The organizer publishes training data in a separate public repository: [AILAB-NDHU/aicup2026-go-dataset](https://github.com/AILAB-NDHU/aicup2026-go-dataset/releases/tag/v1.0). The tutorial-code repository itself does not contain the data.
+The organizer publishes training data in a separate public repository: [AILAB-NDHU/aicup2026-go-dataset](https://github.com/AILAB-NDHU/aicup2026-go-dataset/releases/tag/v1.1). The tutorial-code repository itself does not contain the data.
 
 Run this in the cloned repository:
 
@@ -27,14 +27,16 @@ Run this in the cloned repository:
 !python download_training_data.py
 ```
 
-The helper downloads the pinned v1.0 archive (224,515,476 bytes, about 214 MiB), checks the organizer's SHA-256, safely extracts it, and validates all ten CSVs: 100,000 games each, required columns, rank labels, colors and nonempty SGFs. Existing training folders are validated without overwriting them. Allow space for the archive, approximately 1.3 GB of extracted CSVs, and later feature caches/checkpoints.
+The organizer updated v1.1 on 2 November to add handicap information (`HD[n]`) to SGF records. Regenerate feature caches after changing dataset versions; do not mix old features with the updated data.
+
+The helper downloads the pinned v1.1 archive (220,710,452 bytes, about 210 MiB), checks the organizer's SHA-256, safely extracts it, and validates all ten CSVs: 100,000 games each, required columns, rank labels, colors and nonempty SGFs. Existing v1.1 folders are validated. Older or unversioned folders are backed up only after the replacement passes verification. Allow space for the archive, approximately 1.3 GB of extracted CSVs, and later feature caches/checkpoints.
 
 Expected files: `training/train_D.csv`, `train_C.csv`, `train_B.csv`, `train_A.csv`, and `train_1D.csv` through `train_6D.csv`.
 
 Organizer checksum:
 
 ```text
-959ebc602b9638d665cb063a6269e0d5aef73956b77913e725763eb335ced94b
+e0880a3e8723f776e931ecce7fbc09eace9a0dd42b18a1d8ebac4a1628d2395e
 ```
 
 Data stays excluded from this teaching repository. The organizer restricts use to the 2026 AI CUP competition and prohibits identifying real users. No AI CUP login is needed to download this public training release. Team registration remains necessary for competition participation.

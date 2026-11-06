@@ -1,4 +1,4 @@
-"""Download, verify and extract the organizer's v1.0 training release."""
+"""Download, verify and extract the organizer's v1.1 training release."""
 import csv
 import hashlib
 import shutil
@@ -8,8 +8,8 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-URL = 'https://github.com/AILAB-NDHU/aicup2026-go-dataset/releases/download/v1.0/aicup2026_go_training.tar.xz'
-SHA256 = '959ebc602b9638d665cb063a6269e0d5aef73956b77913e725763eb335ced94b'
+URL = 'https://github.com/AILAB-NDHU/aicup2026-go-dataset/releases/download/v1.1/aicup2026_go_training_v1.1.tar.xz'
+SHA256 = 'e0880a3e8723f776e931ecce7fbc09eace9a0dd42b18a1d8ebac4a1628d2395e'
 LEVELS = ['D', 'C', 'B', 'A', '1D', '2D', '3D', '4D', '5D', '6D']
 
 
@@ -36,16 +36,17 @@ def validate(folder):
 
 def main():
     target = ROOT / 'training'
-    if target.exists():
+    marker = target / '.release-v1.1'
+    if target.exists() and marker.exists():
         print('Existing training folder: validating without overwriting.', flush=True)
         validate(target)
         return
     cache = ROOT / 'downloads'
     cache.mkdir(exist_ok=True)
-    archive = cache / 'aicup2026_go_training.tar.xz'
+    archive = cache / 'aicup2026_go_training_v1.1.tar.xz'
     if not archive.exists():
         partial = archive.with_suffix('.xz.part')
-        print('Downloading official training archive (about 214 MiB)...', flush=True)
+        print('Downloading official training archive (about 210 MiB)...', flush=True)
         with urllib.request.urlopen(URL, timeout=120) as source, partial.open('wb') as sink:
             shutil.copyfileobj(source, sink)
         partial.replace(archive)
@@ -71,7 +72,13 @@ def main():
                 bundle.extractall(destination)
         extracted = destination / 'training'
         validate(extracted)
+        if target.exists():
+            from datetime import datetime
+            backup = ROOT / ('training-backup-' + datetime.now().strftime('%Y%m%d-%H%M%S'))
+            target.rename(backup)
+            print('Preserved previous data:', backup.name, flush=True)
         extracted.rename(target)
+        marker.write_text(SHA256 + '\n', encoding='utf-8')
     print('Ready: 1,000,000 training games. Official test files are separate.', flush=True)
 
 
